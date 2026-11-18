@@ -5,6 +5,6 @@
   [{:name "hirameki"
     :src "src/hirameki/methods/mesh.cljk"
     :scale 1
-    :triggers [{:type :kse :topic "etzhayyim/actor/hirameki"}]
+    :triggers [{:type :kse :topic "itonami/actor/hirameki"}]
     :requires #{:cap/kqe}}]
   :kotoba.app/placement {:spread :zone :require {:tier "edge"}}}]
