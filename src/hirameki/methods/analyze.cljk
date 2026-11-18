@@ -249,7 +249,7 @@
   (let [fields (get analysis "fields")
         patents (get analysis "patents")
         line (fn [r]
-               (format "| %-6s | %-40s | %-3s | %4d%% | %-9s | %.3f | %.3f | %s |"
+               (str/format "| %-6s | %-40s | %-3s | %4d%% | %-9s | %.3f | %.3f | %s |"
                        (get r "id")
                        (subs (get r "name") 0 (min 40 (count (get r "name"))))
                        (name (get r "cpc_section"))
@@ -273,18 +273,18 @@
      "|--------|-------|----------|--------|-----------:|---------|\n"
      (str/join "\n"
                (map (fn [p]
-                      (format "| %s | %s | %s | %s | %s | %s |"
+                      (str/format "| %s | %s | %s | %s | %s | %s |"
                               (get p "id") (get p "field") (name (get p "assignee"))
                               (name (get p "status"))
                               (let [y (get p "years_to_expiry")] (if y (str y) "—"))
                               (name (get p "release_status"))))
                     patents))
      "\n\n## Coverage\n\n"
-     (format "- CPC sections: %d/%d (gap %d); missing: %s\n"
+     (str/format "- CPC sections: %d/%d (gap %d); missing: %s\n"
              (get coverage-map "sections_have") (get coverage-map "sections_target")
              (get coverage-map "sections_gap")
              (str/join " " (get-in coverage-map ["by_section" "missing"])))
-     (format "- Corpus: %d exemplar rows of ~%d world public patents (%.6f%% — the gap the G9 DataLad ingest closes)\n"
+     (str/format "- Corpus: %d exemplar rows of ~%d world public patents (%.6f%% — the gap the G9 DataLad ingest closes)\n"
              (get coverage-map "corpus_have") (get coverage-map "corpus_world_est")
              (get coverage-map "corpus_coverage_rate")))))
 
