@@ -59,6 +59,9 @@ const findings = log.split("\n").filter((l) => /WARNING/.test(l)
 if (findings.length) throw new Error("ClojureScript warnings:\n" + findings.join("\n"));
 
 for (const name of ["index.html", "style.css", "app.js"]) await copyFile(resolve(root, "src/ui", name), join(out, name));
+// The value the Tauri host's awai_host_info returned, passed in by the packaging instead (KOTOBA-159).
+const tauriConf = JSON.parse(await readFile(resolve(root, "src-tauri/tauri.conf.json"), "utf8"));
+await writeFile(join(out, "host-info.js"), `export const hostInfo = ${JSON.stringify({ schema: "awai.shell.host.v1", app: tauriConf.identifier })};\n`);
 await copyFile(resolve(root, "src/local-store.js"), join(out, "local-store.js"));
 const def = (await readFile(resolve(root, "src/app-def.js"), "utf8"))
   .replace("__TITLE__", JSON.stringify(app.title)).replace("__DESCRIPTION__", JSON.stringify(app.description))
@@ -70,7 +73,7 @@ const descriptor = {
   "local-state": { adapter: "localstorage", schema: app.storageKey, version: 1 }, workers: [], operations: [],
 };
 await writeFile(join(out, "descriptor.json"), JSON.stringify(descriptor, null, 2) + "\n");
-const names = ["index.html", "style.css", "app.js", "local-store.js", "app-def.js", "domain.js", "descriptor.json"];
+const names = ["index.html", "style.css", "app.js", "host-info.js", "local-store.js", "app-def.js", "domain.js", "descriptor.json"];
 const files = {};
 for (const name of names) files[name] = sha(await readFile(join(out, name)));
 await writeFile(join(out, "release.json"), JSON.stringify({
